@@ -9,9 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ag-grid-community/client-side-row-model": "^32.0.2",
+    "@ag-grid-community/react": "^32.0.2",
+    "@ag-grid-community/styles": "^32.0.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@mui/icons-material": "^5.16.4",
     "@mui/material": "^5.16.4",
+    "ag-grid-community": "^32.0.2",
+    "ag-grid-react": "^32.0.2",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18"
