@@ -66,17 +66,20 @@ export default function Home() {
   }, []);
 
   return (
-    <div
-    className="ag-theme-quartz-dark" // applying the Data Grid theme
-    style={{ height: 500 }} // the Data Grid will fill the size of the parent container
-   >
-     <AgGridReact
-         rowData={rowData}
-         columnDefs={columnDefs}
-         defaultColDef={defaultColDef}
-         onCellClicked={onCellClicked}
-     />
-   </div>
+    <><div
+      className="ag-theme-quartz-dark" // applying the Data Grid theme
+      style={{ height: 500 }} // the Data Grid will fill the size of the parent container
+    >
+        <AgGridReact
+          rowData={rowData}
+          columnDefs={columnDefs}
+          defaultColDef={defaultColDef}
+          onCellClicked={onCellClicked}
+          rowDragManaged={true}
+           onRowDragEnter={(event) => { console.log(event); }} // En event.overIndex se obtiene la posición actual
+           onRowDragEnd={(event) => { console.log(event); }} // En event.overIndex se obtiene la nueva posicion
+           />
+      </div></>
 
   );
 }
