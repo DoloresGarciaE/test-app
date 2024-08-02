@@ -1,64 +1,85 @@
 'use client'
-import React, { useMemo } from "react";
+import React, {
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+  StrictMode,
+} from "react";
 import { AgGridReact } from 'ag-grid-react';
 import '@ag-grid-community/styles/ag-grid.css';
 import '@ag-grid-community/styles/ag-theme-alpine.css';
+
+import {
+  ColDef,
+  ColGroupDef,
+  GridApi,
+  GridOptions,
+  createGrid,
+} from "ag-grid-community";// React Grid Logic
+import "ag-grid-community/styles/ag-grid.css";
+// Core CSS
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { ColDef } from "ag-grid-community";
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import { createRoot } from "react-dom/client";
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Grid } from '@mui/material';
+
 
 export default function Home() {
-  const CustomCellRenderer = (params) => {
-    const [isHovered, setIsHovered] = React.useState(false);
 
-    return (
-      <div
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-        style={{ alignItems: 'center' }}
-      >
-        <Grid container alignItems="center" justifyContent='space-between'>
-          <Grid item>
-            <span>{params.value}</span>
-          </Grid>
-          <Grid item style={{ visibility: isHovered ? 'visible' : 'hidden' }}>
-            <DeleteIcon onClick={() => window.alert("deleted")} />
-          </Grid>
-        </Grid>
-      </div>
-    );
+  const CustomButtonComponent = () => {
+    return <button onClick={() => window.alert("deleted")}><DeleteIcon /></button>;
   };
 
-  const [columnDefs] = React.useState([
-    { headerName: '', field: 'first_name', cellRenderer: CustomCellRenderer, flex: 1, rowDrag: true, pivotHeaderHeight: 0 },
-  ]);
 
-  const [rowData] = React.useState([
-    { first_name: 'John' },
-    { first_name: 'Jane' },
-    { first_name: 'Jack' },
+  const [columnDefs] = useState([
+    { headerName: 'First Name', field: 'first_name', rowDrag: true },
+    { headerName: 'Last Name', field: 'last_name' },
+    { headerName: 'Job Title', field: 'job_title' },
+    { field: 'office' },
+    { field: 'email' },
+    { field: 'phone' },
+    {
+      field: "electric",
+      cellEditor: "agCheckboxCellEditor",
+    },
+    { field: "button", cellRenderer: CustomButtonComponent, flex: 1 }
+    ]);
+  
+  const [rowData] = useState([
+    { first_name: 'John', last_name: 'Doe', job_title: 'Software Engineer', office: 'Buenos Aires', email: 'email@dominio.com', phone: '1234', electric: true },
+    { first_name: 'Jane', last_name: 'Doe', job_title: 'Software Engineer', office: 'Cordoba' },
+    { first_name: 'John', last_name: 'Doe', job_title: 'Software Engineer', email: 'email2@dominio.com', phone: '1234' },
+    { first_name: 'John', last_name: 'Doe', job_title: 'UX/UI Designer', office: 'Neuquen', email: 'email3@dominio.com', phone: '21354364' },
+    { first_name: 'John', last_name: 'Doe', job_title: 'Software Engineer', office: 'Tucuman', email: 'email4dominio.com', phone: '67876345' },
+  
   ]);
 
   const defaultColDef = useMemo<ColDef>(() => {
     return {
+      width: 200,
       editable: true,
     };
   }, []);
 
+  const onCellClicked = useCallback((params) => {
+      window.alert(`Cell clicked: ${params.value}`);
+  }, []);
+
   return (
-    <div
-      className="ag-theme-quartz-dark"
-      style={{ height: 500 }}
+    <><div
+      className="ag-theme-quartz-dark" // applying the Data Grid theme
+      style={{ height: 500 }} // the Data Grid will fill the size of the parent container
     >
-      <AgGridReact
-        rowData={rowData}
-        columnDefs={columnDefs}
-        defaultColDef={defaultColDef}
-        rowDragManaged={true}
-        pivotHeaderHeight={0}
-      />
-    </div>
+        <AgGridReact
+          rowData={rowData}
+          columnDefs={columnDefs}
+          defaultColDef={defaultColDef}
+          onCellClicked={onCellClicked}
+          rowDragManaged={true}
+           onRowDragEnter={(event) => { console.log(event); }} // En event.overIndex se obtiene la posición actual
+           onRowDragEnd={(event) => { console.log(event); }} // En event.overIndex se obtiene la nueva posicion
+           />
+      </div></>
+
   );
 }
